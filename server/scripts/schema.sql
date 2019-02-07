@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS `playlist`;
+
 CREATE DATABASE playlist;
 
 USE playlist;
@@ -5,7 +7,7 @@ USE playlist;
 DROP TABLE IF EXISTS `playlist`;
 		
 CREATE TABLE `playlist` (
-  `id` INTEGER NULL AUTO_INCREMENT DEFAULT NULL,
+  `id` INTEGER NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(256) NOT NULL,
   `albumartist` VARCHAR(256) NOT NULL,
   `album` VARCHAR(256) NOT NULL,
