@@ -1,11 +1,11 @@
 # Project Name
-
+Front-end Capstone: Scootify Player
 > Project description
-
+full-stack music player 
 ## Related Projects
 
-  - https://github.com/teamName/repo
-  - https://github.com/teamName/repo
+  - https://github.com/hrr36-fec2/fren-playlist
+  - https://github.com/hrr36-fec2/pl61-recommends
   - https://github.com/teamName/repo
   - https://github.com/teamName/repo
 
