@@ -12,6 +12,7 @@
     "build": "webpack --mode production",
     "start": "webpack-dev-server --config ./webpack.config.js --mode development --watch",
     "db-create": "mysql -uroot <./server/scripts/schema.sql",
+    "db-seed": "node ./server/scripts/seed_db.js",
     "server-dev": "nodemon server/app.js",
     "test": "mocha server/spec/server-spec.js",
     "lint": "eslint ./"
