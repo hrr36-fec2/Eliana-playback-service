@@ -35,6 +35,7 @@
     "babel-loader": "^8.0.5",
     "chai": "^3.5.0",
     "eslint-config-hackreactor": "git://github.com/reactorcore/eslint-config-hackreactor",
+    "jest": "^24.1.0",
     "mocha": "^5.2.0",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
