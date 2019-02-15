@@ -2,11 +2,10 @@ var mysql = require('mysql');
 
 dbConnection = mysql.createConnection({
   user: 'root',
-  database: 'playlist',
-  debug: true
+  database: 'playlist'
 });
 
-dbConnection.connect(function (err) {
+dbConnection.connect(function(err) {
   console.log(err);
 });
 

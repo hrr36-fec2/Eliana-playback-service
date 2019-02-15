@@ -1,30 +1,32 @@
-/* eslint-disable quotes */
-var db = require("../db");
+var db = require('../db');
 
 // selects the first 30 tracks from db
 let getPlaylist30 = function(callback) {
-  db.dbConnection.query("SELECT * FROM playlist LIMIT 30", (err, data) => {
-    if (err) {
-      console.log(err, "ERROR WITH MYSQL SELECT QUERY!");
-      callback(err, null);
-    } else {
-      console.log(data, "this is the playlist data!");
-      callback(null, data);
+  db.dbConnection.query(
+    'SELECT * FROM playlist ORDER BY id ASC LIMIT 30',
+    (err, data) => {
+      if (err) {
+        console.log(err, 'ERROR WITH MYSQL SELECT QUERY!');
+        callback(err, null);
+      } else {
+        console.log(data, 'this is the playlist data!');
+        callback(null, data);
+      }
     }
-  });
+  );
 };
 
 //selects a specific track from db based on track_id
-let getTrack = function({ trackid }, callback) {
+let getTrack = function(trackid, callback) {
   db.dbConnection.query(
-    "SELECT * FROM playlist WHERE track_id = ?",
+    'SELECT * FROM playlist WHERE track_id = ?',
     [trackid],
     (err, data) => {
       if (err) {
-        console.log(err, "ERROR WITH MYSQL SELECT QUERY!");
+        console.log(err, 'ERROR WITH MYSQL SELECT QUERY!');
         callback(err, null);
       } else {
-        console.log(data, "this is the playlist data!");
+        console.log(data, 'this is the playlist data!');
         callback(null, data);
       }
     }
@@ -32,18 +34,16 @@ let getTrack = function({ trackid }, callback) {
 };
 
 //a function which toggles a song as favorited or unfavorited
-// eslint-disable-next-line camelcase
-let toggleFavorite = function({ trackid }, callback) {
+let toggleFavorite = function(trackid, callback) {
   db.dbConnection.query(
-    "UPDATE playlist SET favorite = (favorite + 1) % 2 WHERE track_id = ?",
-    // eslint-disable-next-line camelcase
+    'UPDATE playlist SET favorite = (favorite + 1) % 2 WHERE track_id = ?',
     [trackid],
     (err, data) => {
       if (err) {
-        console.log(err, "ERROR WITH MYSQL UPDATE QUERY!!");
+        console.log(err, 'ERROR WITH MYSQL UPDATE QUERY!!');
         callback(err, null);
       } else {
-        console.log(data, "toggled favorites!");
+        console.log(data, 'toggled favorites!');
         callback(null, data);
       }
     }
