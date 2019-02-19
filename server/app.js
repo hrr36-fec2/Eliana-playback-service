@@ -1,5 +1,5 @@
-/* eslint-disable quotes */
 var express = require('express');
+var cors = require('cors');
 var db = require('./db');
 var path = require('path');
 var models = require('./models');
@@ -17,6 +17,7 @@ app.set('port', 3001);
 // Logging and parsing
 app.use(morgan('dev'));
 app.use(parser.json());
+app.use(cors());
 
 // Serve the client files
 app.use(express.static(__dirname + '/../public'));
@@ -30,7 +31,7 @@ if (!module.parent) {
 // Routes
 
 //get playlist
-app.get('/playlist', function(req, res) {
+app.get('/playlist', function (req, res) {
   console.log(req.body, 'GET PLAYLIST REQUEST RECEIVED BY SERVER!');
   models.getPlaylist30((error, results) => {
     if (error) {
@@ -44,7 +45,7 @@ app.get('/playlist', function(req, res) {
 });
 
 //get a specific track
-app.get('/playlist/track/:trackid', function(req, res) {
+app.get('/playlist/track/:trackid', function (req, res) {
   console.log(req.body, 'GET TRACK REQUEST RECEIVED BY SERVER!');
   let trackid = req.params.trackid;
   console.log(trackid);
@@ -60,7 +61,7 @@ app.get('/playlist/track/:trackid', function(req, res) {
 });
 
 //toggle favorites status on a specific track
-app.patch('/playlist/track/:trackid', function(req, res) {
+app.patch('/playlist/track/:trackid', function (req, res) {
   console.log('PATCH REQUEST RECEIVED BY SERVER!');
   //find track by trackId
   let trackid = req.params.trackid;
