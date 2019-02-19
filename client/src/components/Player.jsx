@@ -1,5 +1,6 @@
 import React from 'react';
 import { createPlaylist, playlist } from '../playlist.js';
+import MetaData from './MetaData.jsx';
 
 class Player extends React.Component {
   constructor(props) {
@@ -7,8 +8,12 @@ class Player extends React.Component {
     this.state = {
       id: null,
       trackId: null,
+      title: '',
+      artist: '',
+      albumThumbnail: '',
+      favorite: 0,
       isplaying: false,
-      sourceURL: null,
+      sourceURL: '',
       previous: null,
       next: null,
       progressbar: 0,
@@ -24,6 +29,7 @@ class Player extends React.Component {
     this.playOrPause = this.playOrPause.bind(this);
     this.playNext = this.playNext.bind(this);
     this.playPrev = this.playPrev.bind(this);
+    // this.favorite = this.favorite.bind(this);
 
   }
 
@@ -40,11 +46,18 @@ class Player extends React.Component {
             id: result[0].id,
             trackId: trackId,
             isplaying: true,
-            sourceURL: result.track_file_url,
+            sourceURL: result[0].track_file_url,
+            title: result[0].track_title,
+            favorite: result[0].favorite,
+            artist: result[0].artist_name,
+            albumThumbnail: result[0].album_image_file,
           });
-          this.player.src = this.state.sourceURL;
-          this.player.play();
-        },
+        })
+      .then(() => {
+        this.player.src = this.state.sourceURL;
+        this.player.play();
+      })
+      .catch(
         (error) => {
           console.log(error, 'ERROR FETCHING TRACK ' + trackID);
         }
@@ -56,21 +69,22 @@ class Player extends React.Component {
       id: playlist[index].id,
       trackId: playlist[index].track_id,
       sourceURL: playlist[index].track_file_url,
-      isplaying: true,
+      title: playlist[index].track_title,
+      artist: playlist[index].artist_name,
+      albumThumbnail: playlist[index].album_image_file,
+      favorite: playlist[index].favorite
     });
-    this.player.src = this.state.sourceURL;
-    this.player.play();
     if (this.state.previous === null) {
       this.setState({ previous: index });
-    } else if (this.state.shuffle) {
-      this.setState({ previous: index });
-    } else {
-      this.setState({ previous: index - 1 });
+    }
+    if (this.state.next === null) {
+      this.setState({ next: index + 1 });
     }
   }
 
   playOrPause() {
     if (this.player.paused) {
+      this.player.src = this.state.sourceURL;
       this.player.play();
       this.setState({ isplaying: true });
     } else {
@@ -81,8 +95,7 @@ class Player extends React.Component {
 
   playNext() {
     if (this.state.shuffle) {
-      this.setState({ id: (Math.floor(Math.random() * playlist.length) + 1) });
-      this.startPlayer(this.state.id - 1);
+      this.startPlayer(Math.floor(Math.random() * playlist.length));
     } else {
       if (this.state.index === playlist.length - 1) {
         this.player.pause();
@@ -107,30 +120,26 @@ class Player extends React.Component {
   }
 
   componentDidMount() {
-    this.player = document.getElementById('playback');
     createPlaylist((error) => {
       if (error) {
         console.log(error, 'ERROR IN COMPONENTDIDMOUNT');
       } else {
-        console.log('SUCCESS!');
-        console.log(playlist);
-        // console.log(this);
-        this.setState({
-          id: playlist[0].id,
-          trackId: playlist[0].trackId,
-          sourceURL: playlist[0].track_file_url,
-        });
-        // this.startPlayer(0);
+        console.log(playlist, 'THIS IS THE PLAYLIST');
+        this.startPlayer(0);
       }
     });
-
   }
 
   render() {
     return (
       <div id="player">
+        <MetaData
+          title={this.state.title}
+          artist={this.state.artist}
+          albumThumbnail={this.state.albumThumbnail}
+          favorite={this.state.favorite}
+        />
         <div className="middle-part">
-          <audio id="playback"></audio>
           <div className="controls">
             <button className={this.state.shuffle ? "no-style shuffle active" : "no-style shuffle"} onClick={this.toggleShuffle}><i className="fa fa-random"></i></button>
             <button className="no-style" onClick={this.playPrev}><i className="fa fa-step-backward"></i></button>
