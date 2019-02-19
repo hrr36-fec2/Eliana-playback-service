@@ -31,10 +31,12 @@ var seed = function () {
         var albumArtUrl =
           'https://freemusicarchive.org/file/' + track.album_image_file;
 
+        var trackFileUrl = track.track_file_url + '/download';
+
         dbConnection.query(
           SQL`INSERT INTO playlist (track_id, track_title, artist_name, album_title, track_duration, album_image_file, track_file_url) VALUES (
             ${track.track_id}, ${track.track_title}, ${track.artist_name}, 
-            ${track.album_title}, ${totalSeconds}, ${albumArtUrl}, ${track.track_file_url})`,
+            ${track.album_title}, ${totalSeconds}, ${albumArtUrl}, ${trackFileUrl})`,
           function (err) {
             if (err) {
               console.log(err, 'ERROR IN SEED SCRIPT FOR LOOP!');
