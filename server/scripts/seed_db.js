@@ -2,17 +2,9 @@ var mysql = require('mysql');
 const axios = require('axios');
 var SQL = require('sql-template-strings');
 
-dbConnection = mysql.createConnection({
-  user: 'root',
-  database: 'playlist'
-  // debug: true
-});
 
-dbConnection.connect(function (err) {
-  console.log(err);
-});
-
-var seed = function () {
+var seed = function (dbConnection) {
+  var recordsInserted = 0;
   axios
     .get('https://freemusicarchive.org/featured.json')
     .then(results => {
@@ -63,7 +55,8 @@ var seed = function () {
             if (err) {
               console.log(err, 'ERROR IN SEED SCRIPT FOR LOOP!');
             } else {
-              console.log('1 record inserted');
+              recordsInserted++;
+              console.log(recordsInserted + ' records inserted');
             }
           }
         );
@@ -77,12 +70,16 @@ var seed = function () {
 
 //call the function if module is being run from the command line
 if (require.main === module) {
-  seed();
+  dbConnection = mysql.createConnection({
+    user: 'root',
+    database: 'playlist'
+    // debug: true
+  });
+
+  dbConnection.connect(function (err) {
+    if (err) {
+      console.log(err);
+    }
+  });
+  seed(dbConnection);
 }
-
-module.exports.seed = seed;
-
-//to get album art thumbnail:
-//"https://freemusicarchive.org/file" + "image file path"
-
-//to get duration, convert to seconds
