@@ -9,7 +9,7 @@ const MetaData = props => {
         <span className="artist-name">{props.artist}</span>
       </div>
       <button className="favorite" onClick={props.onClick}>
-        <i className={props.favorite ? "fas fa-heart" : "far fa-heart"}></i>
+        <i className={props.favorite ? 'fas fa-heart' : 'far fa-heart'}></i>
       </button>
     </div>
   );
