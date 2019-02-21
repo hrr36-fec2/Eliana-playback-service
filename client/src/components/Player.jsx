@@ -20,8 +20,8 @@ class Player extends React.Component {
       progressbar: 0,
       volumebar: 100,
       volumeup: true,
-      currentTime: '00:00',
-      totalTime: '00:00',
+      currentSeconds: 0,
+      totalSeconds: 0,
       loop: false,
       shuffle: false
     };
@@ -38,6 +38,11 @@ class Player extends React.Component {
     this.toggleLoop = this.toggleLoop.bind(this);
     this.toggleShuffle = this.toggleShuffle.bind(this);
     this.autoplayListener = this.autoplayListener.bind(this);
+    this.metadataListener = this.metadataListener.bind(this);
+    this.updateProgress = this.updateProgress.bind(this);
+    this.formatTime = this.formatTime.bind(this);
+
+    this.player.addEventListener('ended', this.handlePlayNext);
   }
 
   //if track is requested by a separate component in scootify 
@@ -71,7 +76,6 @@ class Player extends React.Component {
       );
   }
 
-  //sets current song
   setCurrentSong(index, autoplay) {
     this.setState({
       current: index,
@@ -83,10 +87,12 @@ class Player extends React.Component {
       albumThumbnail: playlist[index].album_image_file,
       favorite: playlist[index].favorite,
       previous: Math.max(0, index - 1),
-      next: (index + 1) % playlist.length
+      next: (index + 1) % playlist.length,
     }, () => {
       this.player.src = this.state.sourceURL;
+      this.player.addEventListener('loadedmetadata', this.metadataListener);
       this.player.load();
+
       if (autoplay) {
         this.player.addEventListener('canplay', this.autoplayListener);
       }
@@ -99,11 +105,24 @@ class Player extends React.Component {
     this.handlePlayOrPause();
   }
 
+  metadataListener() {
+    this.player.removeEventListener('loadedmetadata', this.metadataListener);
+    this.setState({ 'totalSeconds': this.player.duration });
+  }
+
+  updateProgress() {
+    this.setState({
+      'currentSeconds': this.player.currentTime,
+      'progressbar': this.player.currentTime / this.player.duration * 100
+    });
+  }
+
   handlePlayOrPause() {
     let isReady = this.player.readyState;
     console.log(isReady, 'Should be greater than 0');
     if (isReady > 0 && this.player.paused) {
       this.player.play().then(() => {
+        this.player.addEventListener('timeupdate', this.updateProgress);
         this.setState({ isplaying: true });
       })
         .catch(error => {
@@ -111,6 +130,7 @@ class Player extends React.Component {
           this.setState({ isplaying: false });
         });
     } else {
+      this.player.removeEventListener('timeupdate', this.updateProgress);
       this.player.pause();
       this.setState({ isplaying: false });
     }
@@ -132,45 +152,47 @@ class Player extends React.Component {
     }
   }
 
-  convertTime(seconds) {
+  formatTime(seconds) {
     let min = Math.floor(seconds / 60);
-    let sec = seconds % 60;
-    min = (min < 10) ? "0" + min : min;
-    sec = (sec < 10) ? "0" + sec : sec;
-    this.setState({ currentTime: min + ":" + sec });
+    let sec = Math.round(seconds % 60);
+    min = (min < 10) ? '0' + min : min;
+    sec = (sec < 10) ? '0' + sec : sec;
+    return min + ':' + sec;
   }
-  totalTime(seconds) {
-    let min = Math.floor(seconds / 60);
-    let sec = seconds % 60;
-    min = (min < 10) ? "0" + min : min;
-    sec = (sec < 10) ? "0" + sec : sec;
-    this.setState({ totalTime: min + ":" + sec });
-  }
+
   onProgressBarClick(e) {
     const offsetX = e.nativeEvent.offsetX;
     const offsetWidth = e.nativeEvent.target.offsetWidth;
     const percent = offsetX / offsetWidth;
     this.player.currentTime = percent * this.player.duration;
+    this.updateProgress();
   }
+
   onVolumeBarClick(e) {
     const offsetX = e.nativeEvent.offsetX;
     const offsetWidth = e.nativeEvent.target.offsetWidth;
     this.player.volume = offsetX / offsetWidth;
+    this.setState({ 'volumebar': this.player.volume * 100 });
   }
+
   toggleLoop() {
     this.setState({ loop: !this.state.loop }, function () {
       this.player.loop = this.state.loop;
     });
   }
+
   toggleShuffle() {
     this.setState({ shuffle: !this.state.shuffle });
   }
+
   toggleVolume() {
     this.setState({ volumeup: !this.state.volumeup }, function () {
       if (!this.state.volumeup) {
         this.player.volume = 0;
+        this.setState({ 'volumebar': 0 });
       } else {
         this.player.volume = 1;
+        this.setState({ 'volumebar': 100 });
       }
     });
   }
@@ -217,13 +239,13 @@ class Player extends React.Component {
           </div>
 
           <div className="progress">
-            <div className="progress-time">{this.state.currentTime}</div>
+            <div className="progress-time">{this.formatTime(this.state.currentSeconds)}</div>
             <div className="bar" onClick={this.onProgressBarClick}>
               {this.state.progressbar > 0 &&
                 <div style={{ width: this.state.progressbar + '%' }}></div>
               }
             </div>
-            <div className="progress-time">{this.state.totalTime}</div>
+            <div className="progress-time">{this.formatTime(this.state.totalSeconds)}</div>
           </div>
         </div>
 
