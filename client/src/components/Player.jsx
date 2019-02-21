@@ -229,13 +229,13 @@ class Player extends React.Component {
         />
         <div className="now-playing-bar__center">
           <div className="controls">
-            <button className={this.state.shuffle ? "no-style shuffle active" : "no-style shuffle"} onClick={this.toggleShuffle}><ion-icon name="shuffle"></ion-icon></button>
-            <button className="no-style" onClick={this.handlePlayPrev}><ion-icon name="skip-backward"></ion-icon></button>
-            <button className="no-style play" onClick={this.handlePlayOrPause}>
-              <i className={this.state.isplaying ? "far fa-pause-circle" : "far fa-play-circle"}></i>
+            <button className={this.state.shuffle ? 'no-style shuffle active' : 'no-style shuffle'} onClick={this.toggleShuffle}><ion-icon name="shuffle"></ion-icon></button>
+            <button className='no-style' onClick={this.handlePlayPrev}><ion-icon name='skip-backward'></ion-icon></button>
+            <button className='no-style play' onClick={this.handlePlayOrPause}>
+              <i className={this.state.isplaying ? 'far fa-pause-circle' : 'far fa-play-circle'}></i>
             </button>
-            <button className="no-style" onClick={this.handlePlayNext}><ion-icon name="skip-forward"></ion-icon></button>
-            <button className={this.state.loop ? "no-style loop active" : "no-style loop"} onClick={this.toggleLoop}><ion-icon name="repeat"></ion-icon></button>
+            <button className='no-style' onClick={this.handlePlayNext}><ion-icon name='skip-forward'></ion-icon></button>
+            <button className={this.state.loop ? 'no-style loop active' : 'no-style loop'} onClick={this.toggleLoop}><ion-icon name='repeat'></ion-icon></button>
           </div>
 
           <div className="progress">
