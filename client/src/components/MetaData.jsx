@@ -8,6 +8,9 @@ const MetaData = props => {
         <span className="title">{props.title}</span>
         <span className="artist-name">{props.artist}</span>
       </div>
+      <button className="favorite" onClick={props.onClick}>
+        <i className={props.favorite ? 'fas fa-heart' : 'far fa-heart'}></i>
+      </button>
     </div>
   );
 };
