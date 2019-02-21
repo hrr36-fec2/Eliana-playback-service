@@ -5,8 +5,9 @@ const createPlaylist = function (callback) {
     .then(res => res.json())
     .then(
       (result) => {
-        playlist.splice(0, 0, ...result);
-        console.log(playlist, 'SUCCESS POPULATING PLAYLIST IN PLAYLISTJS!');
+        for (var i = 0; i < result.length; i++) {
+          playlist.splice(0, 0, result[i]);
+        }
         callback();
       },
       (error) => {

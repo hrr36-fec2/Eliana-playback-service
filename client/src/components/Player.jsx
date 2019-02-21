@@ -6,35 +6,42 @@ class Player extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      current: null,
       id: null,
       trackId: null,
-      title: '',
-      artist: '',
-      albumThumbnail: '',
+      title: null,
+      artist: null,
+      albumThumbnail: null,
       favorite: 0,
       isplaying: false,
-      sourceURL: '',
+      sourceURL: null,
       previous: null,
       next: null,
       progressbar: 0,
+      volumebar: 100,
+      volumeup: true,
       currentTime: '00:00',
-      duration: '00:00',
+      totalTime: '00:00',
       loop: false,
       shuffle: false
     };
 
     this.player = new Audio();
-    this.playTrack = this.playTrack.bind(this);
-    this.startPlayer = this.startPlayer.bind(this);
-    this.playOrPause = this.playOrPause.bind(this);
-    this.playNext = this.playNext.bind(this);
-    this.playPrev = this.playPrev.bind(this);
-    // this.favorite = this.favorite.bind(this);
-
+    this.playSpecificTrack = this.playSpecificTrack.bind(this);
+    this.setCurrentSong = this.setCurrentSong.bind(this);
+    this.handlePlayOrPause = this.handlePlayOrPause.bind(this);
+    this.handlePlayNext = this.handlePlayNext.bind(this);
+    this.handlePlayPrev = this.handlePlayPrev.bind(this);
+    this.onVolumeBarClick = this.onVolumeBarClick.bind(this);
+    this.toggleVolume = this.toggleVolume.bind(this);
+    this.onProgressBarClick = this.onProgressBarClick.bind(this);
+    this.toggleLoop = this.toggleLoop.bind(this);
+    this.toggleShuffle = this.toggleShuffle.bind(this);
+    this.autoplayListener = this.autoplayListener.bind(this);
   }
 
   //if track is requested by a separate component in scootify 
-  playTrack(trackId) {
+  playSpecificTrack(trackId) {
     fetch('http://localhost:3001/track/' + trackId, {
       method: 'GET'
     })
@@ -64,58 +71,115 @@ class Player extends React.Component {
       );
   }
 
-  startPlayer(index) {
+  //sets current song
+  setCurrentSong(index, autoplay) {
     this.setState({
+      current: index,
       id: playlist[index].id,
       trackId: playlist[index].track_id,
       sourceURL: playlist[index].track_file_url,
       title: playlist[index].track_title,
       artist: playlist[index].artist_name,
       albumThumbnail: playlist[index].album_image_file,
-      favorite: playlist[index].favorite
-    });
-    if (this.state.previous === null) {
-      this.setState({ previous: index });
-    }
-    if (this.state.next === null) {
-      this.setState({ next: index + 1 });
-    }
-  }
-
-  playOrPause() {
-    if (this.player.paused) {
+      favorite: playlist[index].favorite,
+      previous: Math.max(0, index - 1),
+      next: (index + 1) % playlist.length
+    }, () => {
       this.player.src = this.state.sourceURL;
-      this.player.play();
-      this.setState({ isplaying: true });
-    } else {
-      this.player.pause();
-      this.setState({ isplaying: false });
-    }
-  }
-
-  playNext() {
-    if (this.state.shuffle) {
-      this.startPlayer(Math.floor(Math.random() * playlist.length));
-    } else {
-      if (this.state.index === playlist.length - 1) {
-        this.player.pause();
-        this.setState({ isplaying: false });
-      } else {
-        this.setState({ next: this.state.index + 1 });
-        this.startPlayer(this.state.next);
+      this.player.load();
+      if (autoplay) {
+        this.player.addEventListener('canplay', this.autoplayListener);
       }
-    }
+    });
   }
 
-  playPrev() {
-    if (this.state.currentTime <= '00:03') {
-      this.startPlayer(this.state.id - 1);
-    }
-    if (this.state.previous >= 0) {
-      this.startPlayer(this.state.previous);
+  autoplayListener() {
+    this.player.removeEventListener('canplay', this.autoplayListener);
+    this.player.pause();
+    this.handlePlayOrPause();
+  }
+
+  handlePlayOrPause() {
+    let isReady = this.player.readyState;
+    console.log(isReady, 'Should be greater than 0');
+    if (isReady > 0 && this.player.paused) {
+      this.player.play().then(() => {
+        this.setState({ isplaying: true });
+      })
+        .catch(error => {
+          console.log(error, 'ERROR IN PLAY PROMISE');
+          this.setState({ isplaying: false });
+        });
     } else {
       this.player.pause();
       this.setState({ isplaying: false });
+    }
+  }
+
+  handlePlayNext() {
+    if (this.state.shuffle) {
+      this.setCurrentSong(Math.floor(Math.random() * playlist.length), true);
+    } else {
+      this.setCurrentSong(this.state.next, true);
+    }
+  }
+
+  handlePlayPrev() {
+    if (this.player.currentTime <= 3) {
+      this.setCurrentSong(this.state.previous, true);
+    } else {
+      this.setCurrentSong(this.state.current, true);
+    }
+  }
+
+  convertTime(seconds) {
+    let min = Math.floor(seconds / 60);
+    let sec = seconds % 60;
+    min = (min < 10) ? "0" + min : min;
+    sec = (sec < 10) ? "0" + sec : sec;
+    this.setState({ currentTime: min + ":" + sec });
+  }
+  totalTime(seconds) {
+    let min = Math.floor(seconds / 60);
+    let sec = seconds % 60;
+    min = (min < 10) ? "0" + min : min;
+    sec = (sec < 10) ? "0" + sec : sec;
+    this.setState({ totalTime: min + ":" + sec });
+  }
+  onProgressBarClick(e) {
+    const offsetX = e.nativeEvent.offsetX;
+    const offsetWidth = e.nativeEvent.target.offsetWidth;
+    const percent = offsetX / offsetWidth;
+    this.player.currentTime = percent * this.player.duration;
+  }
+  onVolumeBarClick(e) {
+    const offsetX = e.nativeEvent.offsetX;
+    const offsetWidth = e.nativeEvent.target.offsetWidth;
+    this.player.volume = offsetX / offsetWidth;
+  }
+  toggleLoop() {
+    this.setState({ loop: !this.state.loop }, function () {
+      this.player.loop = this.state.loop;
+    });
+  }
+  toggleShuffle() {
+    this.setState({ shuffle: !this.state.shuffle });
+  }
+  toggleVolume() {
+    this.setState({ volumeup: !this.state.volumeup }, function () {
+      if (!this.state.volumeup) {
+        this.player.volume = 0;
+      } else {
+        this.player.volume = 1;
+      }
+    });
+  }
+
+  toggleFavorite() {
+    if (this.state.favorite === 0) {
+      this.setState({ favorite: 1 });
+    } else {
+      this.setState({ favorite: 0 });
     }
   }
 
@@ -125,10 +189,11 @@ class Player extends React.Component {
         console.log(error, 'ERROR IN COMPONENTDIDMOUNT');
       } else {
         console.log(playlist, 'THIS IS THE PLAYLIST');
-        this.startPlayer(0);
+        this.setCurrentSong(0);
       }
     });
   }
+
 
   render() {
     return (
@@ -137,17 +202,37 @@ class Player extends React.Component {
           title={this.state.title}
           artist={this.state.artist}
           albumThumbnail={this.state.albumThumbnail}
+          onClick={() => this.toggleFavorite()}
           favorite={this.state.favorite}
         />
-        <div className="middle-part">
+        <div className="now-playing-bar__center">
           <div className="controls">
-            <button className={this.state.shuffle ? "no-style shuffle active" : "no-style shuffle"} onClick={this.toggleShuffle}><i className="fa fa-random"></i></button>
-            <button className="no-style" onClick={this.playPrev}><i className="fa fa-step-backward"></i></button>
-            <button className="no-style play" onClick={this.playOrPause}>
+            <button className={this.state.shuffle ? "no-style shuffle active" : "no-style shuffle"} onClick={this.toggleShuffle}><ion-icon name="shuffle"></ion-icon></button>
+            <button className="no-style" onClick={this.handlePlayPrev}><ion-icon name="skip-backward"></ion-icon></button>
+            <button className="no-style play" onClick={this.handlePlayOrPause}>
               <i className={this.state.isplaying ? "far fa-pause-circle" : "far fa-play-circle"}></i>
             </button>
-            <button className="no-style" onClick={this.playNext}><i className="fa fa-step-forward"></i></button>
-            <button className={this.state.loop ? "no-style loop active" : "no-style loop"} onClick={this.toggleLoop}><i className="fa fa-sync-alt"></i></button>
+            <button className="no-style" onClick={this.handlePlayNext}><ion-icon name="skip-forward"></ion-icon></button>
+            <button className={this.state.loop ? "no-style loop active" : "no-style loop"} onClick={this.toggleLoop}><ion-icon name="repeat"></ion-icon></button>
+          </div>
+
+          <div className="progress">
+            <div className="progress-time">{this.state.currentTime}</div>
+            <div className="bar" onClick={this.onProgressBarClick}>
+              {this.state.progressbar > 0 &&
+                <div style={{ width: this.state.progressbar + '%' }}></div>
+              }
+            </div>
+            <div className="progress-time">{this.state.totalTime}</div>
+          </div>
+        </div>
+
+        <div className="volume-bar">
+          <button className="no-style" onClick={this.toggleVolume}>
+            <i className={this.state.volumeup ? "fa fa-volume-up" : "fa fa-volume-off"}></i>
+          </button>
+          <div className="fill" onClick={this.onVolumeBarClick}>
+            <div style={{ width: this.state.volumebar + '%' }}></div>
           </div>
         </div>
       </div>
