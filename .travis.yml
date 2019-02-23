@@ -8,5 +8,8 @@ install:
   - npm run db-seed
   - npm run server-dev &
 
+after_install: 
+  - sleep 5
+
 services:
   - mysql
