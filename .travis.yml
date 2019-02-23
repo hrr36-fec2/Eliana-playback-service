@@ -8,7 +8,7 @@ install:
   - npm run db-seed
   - npm run server-dev &
 
-after_install: 
+before_script: 
   - sleep 5
 
 services:
