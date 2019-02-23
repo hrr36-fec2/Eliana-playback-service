@@ -34,13 +34,13 @@ if (!module.parent) {
 
 //get playlist
 app.get('/playlist', function (req, res) {
-  console.log(req.body, 'GET PLAYLIST REQUEST RECEIVED BY SERVER!');
+  console.log('GET PLAYLIST REQUEST RECEIVED BY SERVER!');
   models.getPlaylist30((error, results) => {
     if (error) {
       console.log(error, 'SERVER ERROR FETCHING PLAYLIST!');
       res.status(500).send(error);
     } else {
-      console.log(results, 'SERVER SUCCESS FETCHING PLAYLIST!!');
+      console.log('SERVER SUCCESS FETCHING PLAYLIST!');
       res.status(200).json(results);
     }
   });
@@ -48,7 +48,7 @@ app.get('/playlist', function (req, res) {
 
 //get a specific track
 app.get('/playlist/track/:trackid', function (req, res) {
-  console.log(req.body, 'GET TRACK REQUEST RECEIVED BY SERVER!');
+  console.log('GET TRACK REQUEST RECEIVED BY SERVER!');
   let trackid = req.params.trackid;
   console.log(trackid);
   models.getTrack(trackid, (error, results) => {
@@ -56,7 +56,7 @@ app.get('/playlist/track/:trackid', function (req, res) {
       console.log(error, 'SERVER ERROR FETCHING TRACK!');
       res.status(500).send(error);
     } else {
-      console.log(results, 'SERVER SUCCESS FETCHING TRACK!!');
+      console.log('SERVER SUCCESS FETCHING TRACK!');
       res.status(200).json(results);
     }
   });
@@ -70,10 +70,10 @@ app.patch('/playlist/track/:trackid', function (req, res) {
   console.log(trackid);
   models.toggleFavorite(trackid, (error, result) => {
     if (error) {
-      console.log(error, 'ERROR IN SERVER, PATCH REQUEST!!');
+      console.log(error, 'ERROR IN SERVER, PATCH REQUEST!');
       res.status(500).send(error);
     } else {
-      console.log(result, 'SUCCESS IN SERVER, PATCH REQUEST!!!');
+      console.log('SUCCESS IN SERVER, PATCH REQUEST!');
       res.status(200).json(result);
     }
   });
