@@ -17,6 +17,8 @@ app.set('port', 3001);
 // Logging and parsing
 app.use(morgan('dev'));
 app.use(parser.json());
+
+//Enable CORS
 app.use(cors());
 
 // Serve the client files
