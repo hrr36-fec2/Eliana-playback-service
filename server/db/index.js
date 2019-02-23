@@ -5,8 +5,10 @@ dbConnection = mysql.createConnection({
   database: 'playlist'
 });
 
-dbConnection.connect(function(err) {
-  console.log(err);
+dbConnection.connect(function (err) {
+  if (err) {
+    console.log(err);
+  }
 });
 
 module.exports.dbConnection = dbConnection;
