@@ -1,0 +1,105 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Player should render correctly 1`] = `
+<div
+  id="player"
+>
+  <MetaData
+    albumThumbnail={null}
+    artist={null}
+    favorite={0}
+    onClick={[Function]}
+    title={null}
+  />
+  <div
+    className="now-playing-bar__center"
+  >
+    <div
+      className="controls"
+    >
+      <button
+        className="no-style shuffle"
+        onClick={[Function]}
+      >
+        <ion-icon
+          name="shuffle"
+        />
+      </button>
+      <button
+        className="no-style"
+        onClick={[Function]}
+      >
+        <ion-icon
+          name="skip-backward"
+        />
+      </button>
+      <button
+        className="no-style play"
+        onClick={[Function]}
+      >
+        <i
+          className="far fa-play-circle"
+        />
+      </button>
+      <button
+        className="no-style"
+        onClick={[Function]}
+      >
+        <ion-icon
+          name="skip-forward"
+        />
+      </button>
+      <button
+        className="no-style loop"
+        onClick={[Function]}
+      >
+        <ion-icon
+          name="repeat"
+        />
+      </button>
+    </div>
+    <div
+      className="progress"
+    >
+      <div
+        className="progress-time"
+      >
+        00:00
+      </div>
+      <div
+        className="bar"
+        onClick={[Function]}
+      />
+      <div
+        className="progress-time"
+      >
+        00:00
+      </div>
+    </div>
+  </div>
+  <div
+    className="volume-bar"
+  >
+    <button
+      className="no-style"
+      onClick={[Function]}
+    >
+      <i
+        className="fa fa-volume-up"
+      />
+    </button>
+    <div
+      className="fill"
+      onClick={[Function]}
+    >
+      <div
+        style={
+          Object {
+            "width": "100%",
+          }
+        }
+      />
+    </div>
+  </div>
+</div>
+`;
