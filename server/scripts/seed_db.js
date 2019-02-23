@@ -6,31 +6,33 @@ var SQL = require('sql-template-strings');
 var seed = function (dbConnection) {
   var recordsInserted = 0;
   axios
+    //fetch some track metadata from fma.org. the src urls do not download and play, so we'll be replacing those with real songs
     .get('https://freemusicarchive.org/featured.json')
     .then(results => {
+      //These are 20 real songs stored on S3 with signed urls. We'll be looping through these and assigning a src to each of our 300 playlist entries in the db
       var songs = [
-        'https://scootify-playlist-songs.s3.amazonaws.com/02_-_Favorite_Secrets.mp3?AWSAccessKeyId=AKIAJTJTJBX4OUBO5B5Q&Signature=c1ivjifRGw5pHCD%2F71aLO%2FPPn68%3D&Expires=1582251048',
-        'https://scootify-playlist-songs.s3.amazonaws.com/Black_Ant_-_01_-_Fater_Lee.mp3?AWSAccessKeyId=AKIAJTJTJBX4OUBO5B5Q&Signature=I0OOUIMTrgM0IOAurfDbrj%2Ftt%2Bk%3D&Expires=1582251049',
-        'https://scootify-playlist-songs.s3.amazonaws.com/BoxCat_Games_-_05_-_Battle_Boss.mp3?AWSAccessKeyId=AKIAJTJTJBX4OUBO5B5Q&Signature=e1zB9ELeTUUB1d57N3StSnU%2B3SE%3D&Expires=1582251049',
-        'https://scootify-playlist-songs.s3.amazonaws.com/BoxCat_Games_-_10_-_Epic_Song.mp3?AWSAccessKeyId=AKIAJTJTJBX4OUBO5B5Q&Signature=zyOmOAGtEDeLzsSVWH0kvHk2cJM%3D&Expires=1582251050',
-        'https://scootify-playlist-songs.s3.amazonaws.com/Broke_For_Free_-_01_-_As_Colorful_As_Ever.mp3?AWSAccessKeyId=AKIAJTJTJBX4OUBO5B5Q&Signature=8Y1UoA3LvEUaJStUh7c5%2FgIHQhY%3D&Expires=1582251051',
-        'https://scootify-playlist-songs.s3.amazonaws.com/Broke_For_Free_-_01_-_Night_Owl.mp3?AWSAccessKeyId=AKIAJTJTJBX4OUBO5B5Q&Signature=AeriAyKr%2Fgic3ebCv8Xp2Ep0bls%3D&Expires=1582251051',
-        'https://scootify-playlist-songs.s3.amazonaws.com/Broke_For_Free_-_05_-_Something_Elated.mp3?AWSAccessKeyId=AKIAJTJTJBX4OUBO5B5Q&Signature=o6GT8xszmzyS5zhekfc4dGFK5v4%3D&Expires=1582251052',
-        'https://scootify-playlist-songs.s3.amazonaws.com/Dan_Lerch_-_09_-_O_Tannenbaum.mp3?AWSAccessKeyId=AKIAJTJTJBX4OUBO5B5Q&Signature=YCD3XV0eDFuQlewGM2hDdsHct48%3D&Expires=1582251052',
-        'https://scootify-playlist-songs.s3.amazonaws.com/Gillicuddy_-_05_-_Springish.mp3?AWSAccessKeyId=AKIAJTJTJBX4OUBO5B5Q&Signature=QupGvSpu4OQdin0FlNAhrQN%2Bjss%3D&Expires=1582251053',
-        'https://scootify-playlist-songs.s3.amazonaws.com/Hogan_Grip_-_03_-_Stance_Gives_You_Balance.mp3?AWSAccessKeyId=AKIAJTJTJBX4OUBO5B5Q&Signature=qizdzSuvTzWc%2Bis92GvJCQDg1qM%3D&Expires=1582251053',
-        'https://scootify-playlist-songs.s3.amazonaws.com/Jahzzar_-_01_-_The_last_ones.mp3?AWSAccessKeyId=AKIAJTJTJBX4OUBO5B5Q&Signature=5Lh6%2BKpd1apNTuDNqmjkPLgrhpc%3D&Expires=1582251054',
-        'https://scootify-playlist-songs.s3.amazonaws.com/Jahzzar_-_05_-_Siesta.mp3?AWSAccessKeyId=AKIAJTJTJBX4OUBO5B5Q&Signature=ZcVj%2FkNs2BulwTogQps8o3RhjBk%3D&Expires=1582251055',
-        'https://scootify-playlist-songs.s3.amazonaws.com/Jason_Shaw_-_RUNNING_WATERS.mp3?AWSAccessKeyId=AKIAJTJTJBX4OUBO5B5Q&Signature=Z19d9wywpoB5ivfVS%2BOWOUbBTWc%3D&Expires=1582251055',
-        'https://scootify-playlist-songs.s3.amazonaws.com/Kai_Engel_-_04_-_Moonlight_Reprise.mp3?AWSAccessKeyId=AKIAJTJTJBX4OUBO5B5Q&Signature=pPToAbdcZfUgwGS0UiXb4fL1iBo%3D&Expires=1582251056',
-        'https://scootify-playlist-songs.s3.amazonaws.com/Kevin_MacLeod_-_Ghost_Dance.mp3?AWSAccessKeyId=AKIAJTJTJBX4OUBO5B5Q&Signature=fcPQg14%2BOK9S3Z1QzS%2BN%2FnI8f30%3D&Expires=1582251057',
-        'https://scootify-playlist-songs.s3.amazonaws.com/Monk_Turner__Fascinoma_-_01_-_Its_Your_Birthday.mp3?AWSAccessKeyId=AKIAJTJTJBX4OUBO5B5Q&Signature=nOEhzLk6SxxDstqlHDXmSQ5h8UM%3D&Expires=1582251057',
-        'https://scootify-playlist-songs.s3.amazonaws.com/Podington_Bear_-_Starling.mp3?AWSAccessKeyId=AKIAJTJTJBX4OUBO5B5Q&Signature=ZrqwkBDSJAjTGJs0jvwJoEagK%2BY%3D&Expires=1582251058',
-        'https://scootify-playlist-songs.s3.amazonaws.com/The_Freak_Fandango_Orchestra_-_01_-_Requiem_for_a_Fish.mp3?AWSAccessKeyId=AKIAJTJTJBX4OUBO5B5Q&Signature=J9I%2BK%2FeWr69A8fLQc%2BEd35ZWMvc%3D&Expires=1582251058',
-        'https://scootify-playlist-songs.s3.amazonaws.com/The_Kyoto_Connection_-_09_-_Hachiko_The_Faithtful_Dog.mp3?AWSAccessKeyId=AKIAJTJTJBX4OUBO5B5Q&Signature=VqE%2FH4YBsD%2BauCCrDcBV0QJtz0g%3D&Expires=1582251059',
-        'https://scootify-playlist-songs.s3.amazonaws.com/Tours_-_01_-_Enthusiast.mp3?AWSAccessKeyId=AKIAJTJTJBX4OUBO5B5Q&Signature=5oPp71t6yGvgTqUc3gw7R6MEY7k%3D&Expires=1582251059'
+        'https://www.dropbox.com/s/3ej81lnj99yqmt8/02_-_Favorite_Secrets.mp3?dl=1',
+        'https://www.dropbox.com/s/zsra7698ew2c3td/Black_Ant_-_01_-_Fater_Lee.mp3?dl=1',
+        'https://www.dropbox.com/s/q8mi5mzjje5u476/BoxCat_Games_-_05_-_Battle_Boss.mp3?dl=1',
+        'https://www.dropbox.com/s/7o4altcbkmh6kvh/BoxCat_Games_-_10_-_Epic_Song.mp3?dl=1',
+        'https://www.dropbox.com/s/175i2ospy08vodr/Broke_For_Free_-_01_-_As_Colorful_As_Ever.mp3?dl=1',
+        'https://www.dropbox.com/s/61d6t7vk0fj5825/Broke_For_Free_-_01_-_Night_Owl.mp3?dl=1',
+        'https://www.dropbox.com/s/lh1lrj4yv1mthic/Broke_For_Free_-_05_-_Something_Elated.mp3?dl=1',
+        'https://www.dropbox.com/s/lv5qdw9zso7zb2e/Dan_Lerch_-_09_-_O_Tannenbaum.mp3?dl=1',
+        'https://www.dropbox.com/s/ik079turtset9tz/Gillicuddy_-_05_-_Springish.mp3?dl=1',
+        'https://www.dropbox.com/s/yivhh7taxnsgmgl/Hogan_Grip_-_03_-_Stance_Gives_You_Balance.mp3?dl=1',
+        'https://www.dropbox.com/s/urcsdx7e3ith00b/Jahzzar_-_01_-_The_last_ones.mp3?dl=1',
+        'https://www.dropbox.com/s/2fyz4s1p67kmkee/Jahzzar_-_05_-_Siesta.mp3?dl=1',
+        'https://www.dropbox.com/s/icnohez0lsxn3vg/Jason_Shaw_-_RUNNING_WATERS.mp3?dl=1',
+        'https://www.dropbox.com/s/ktdk3hgd584juik/Kai_Engel_-_04_-_Moonlight_Reprise.mp3?dl=1',
+        'https://www.dropbox.com/s/yalcoi0elbm5neu/Kevin_MacLeod_-_Ghost_Dance.mp3?dl=1',
+        'https://www.dropbox.com/s/w9ku4aspbq31bkb/Monk_Turner__Fascinoma_-_01_-_Its_Your_Birthday.mp3?dl=1',
+        'https://www.dropbox.com/s/ie9atoty25eiark/Podington_Bear_-_Starling.mp3?dl=1',
+        'https://www.dropbox.com/s/0nxvkw3hr28c28a/Rolemusic_-_02_-_May.mp3?dl=1',
+        'https://www.dropbox.com/s/i7ku2qo3gapos26/The_Freak_Fandango_Orchestra_-_01_-_Requiem_for_a_Fish.mp3?dl=1',
+        'https://www.dropbox.com/s/o6gwna5at2fhh5g/The_Kyoto_Connection_-_09_-_Hachiko_The_Faithtful_Dog.mp3?dl=1',
+        'https://www.dropbox.com/s/p9bpbisxmbk38go/Tours_-_01_-_Enthusiast.mp3?dl=1'
       ];
-      // console.log(results.data.aTracks);
       var tracks = results.data.aTracks;
       for (var i = 0; i < tracks.length; i++) {
         var track = tracks[i];
