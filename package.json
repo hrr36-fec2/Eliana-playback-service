@@ -8,6 +8,14 @@
   "engines": {
     "node": ">=11.6"
   },
+  "jest": {
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "setupFiles": [
+      "./client/src/setupTests.js"
+    ]
+  },
   "scripts": {
     "postinstall": "curl -s https://raw.githubusercontent.com/reactorcore/pomander/master/bin/install | bash",
     "build": "webpack --mode production",
@@ -16,6 +24,7 @@
     "db-seed": "node ./server/scripts/seed_db.js",
     "server-dev": "nodemon server/app.js",
     "test": "mocha server/spec/server-spec.js",
+    "test-react": "jest --verbose",
     "lint": "eslint ./"
   },
   "dependencies": {
