@@ -27,7 +27,6 @@ class Player extends React.Component {
     };
 
     this.player = new Audio();
-    this.playSpecificTrack = this.playSpecificTrack.bind(this);
     this.setCurrentSong = this.setCurrentSong.bind(this);
     this.handlePlayOrPause = this.handlePlayOrPause.bind(this);
     this.handlePlayNext = this.handlePlayNext.bind(this);
@@ -43,37 +42,6 @@ class Player extends React.Component {
     this.formatTime = this.formatTime.bind(this);
 
     this.player.addEventListener('ended', this.handlePlayNext);
-  }
-
-  //if track is requested by a separate component in scootify 
-  playSpecificTrack(trackId) {
-    fetch('http://localhost:3001/track/' + trackId, {
-      method: 'GET'
-    })
-      .then(res => res.json())
-      .then(
-        (result) => {
-          console.log(result, 'SUCCESS GETTING TRACK ' + trackId);
-          this.setState({
-            id: result[0].id,
-            trackId: trackId,
-            isplaying: true,
-            sourceURL: result[0].track_file_url,
-            title: result[0].track_title,
-            favorite: result[0].favorite,
-            artist: result[0].artist_name,
-            albumThumbnail: result[0].album_image_file,
-          });
-        })
-      .then(() => {
-        this.player.src = this.state.sourceURL;
-        this.player.play();
-      })
-      .catch(
-        (error) => {
-          console.log(error, 'ERROR FETCHING TRACK ' + trackID);
-        }
-      );
   }
 
   setCurrentSong(index, autoplay) {
