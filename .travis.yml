@@ -25,3 +25,4 @@ deploy:
   app: "Scootify"
   env: "Scootify-env"
   bucket_name: "elasticbeanstalk-us-east-2-048892182554"
+  skip_cleanup: true
