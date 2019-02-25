@@ -40,7 +40,6 @@ class Player extends React.Component {
     this.metadataListener = this.metadataListener.bind(this);
     this.updateProgress = this.updateProgress.bind(this);
     this.formatTime = this.formatTime.bind(this);
-
     this.player.addEventListener('ended', this.handlePlayNext);
   }
 
