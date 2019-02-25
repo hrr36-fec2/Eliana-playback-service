@@ -19,11 +19,11 @@
   "scripts": {
     "postinstall": "curl -s https://raw.githubusercontent.com/reactorcore/pomander/master/bin/install | bash",
     "build": "webpack --mode production",
-    "start": "webpack-dev-server --config ./webpack.config.js --mode development --watch",
     "db-seed": "mysql -uroot < ./server/scripts/seed_db.sql",
     "db-create-only": "mysql -uroot <./server/scripts/schema.sql",
     "db-seed-online": "node ./server/scripts/seed_db.js",
-    "server-dev": "nodemon server/app.js",
+    "start-dev": "webpack-dev-server --config ./webpack.config.js --mode development --watch",
+    "start": "nodemon server/app.js",
     "test": "mocha server/spec/server-spec.js",
     "test-react": "jest --verbose",
     "lint": "eslint ./"

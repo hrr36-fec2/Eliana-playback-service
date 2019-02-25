@@ -1,7 +1,5 @@
 var express = require('express');
 var cors = require('cors');
-var db = require('./db');
-var path = require('path');
 var models = require('./models');
 
 // Middleware

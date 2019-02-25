@@ -1,23 +1,22 @@
 var chai = require('chai');
-var mysql = require('mysql');
+var db = require('../db');
 const axios = require('axios');
 const expect = chai.expect;
 
-var dbConnection;
 describe('Persistent Node Playlist Server', () => {
-  before(function () {
-    dbConnection = mysql.createConnection({
-      user: 'root',
-      database: 'playlist'
-    });
+  // before(function () {
+  //   dbConnection = mysql.createConnection({
+  //     user: 'root',
+  //     database: 'playlist'
+  //   });
 
-    dbConnection.connect(function (err) {
-      if (err) {
-        console.log(err);
-      }
-    });
+  //   dbConnection.connect(function (err) {
+  //     if (err) {
+  //       console.log(err);
+  //     }
+  //   });
 
-  });
+  // });
 
   it('Should output the id of the first track in the playlist as 1', (done) => {
     axios.get('http://127.0.0.1:3001/playlist').then(response => {
@@ -61,6 +60,6 @@ describe('Persistent Node Playlist Server', () => {
   });
 
   after(function () {
-    dbConnection.end();
+    db.dbConnection.end();
   });
 });

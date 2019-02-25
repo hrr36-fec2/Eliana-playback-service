@@ -13,6 +13,8 @@ before_script:
 services:
   - mysql
 
+before_deploy: "npm build"
+
 deploy:
   provider: elasticbeanstalk
   access_key_id: 
@@ -23,3 +25,5 @@ deploy:
   app: "Scootify"
   env: "Scootify-env"
   bucket_name: "elasticbeanstalk-us-east-2-048892182554"
+
+after_deploy: "npm run db-seed"
