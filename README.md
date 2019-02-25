@@ -1,5 +1,5 @@
 # Project Name
-##Scootify
+## Scootify
 
 Scootify is a music streaming app modeled after the popular service Spotify. This is created as an educational project to learn more about app development and tools, including (but not limited to) React, MySql, Express, Jest, and Enzyme.
 
