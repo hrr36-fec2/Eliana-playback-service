@@ -2,7 +2,7 @@ const axios = require('axios');
 let playlist = [];
 
 const createPlaylist = function (callback) {
-  axios.get('http://localhost:3001/playlist')
+  axios.get('/playlist')
     .then(res => {
       return res.data;
     })
