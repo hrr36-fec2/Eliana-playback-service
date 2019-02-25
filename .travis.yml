@@ -15,7 +15,7 @@ services:
 
 before_deploy: 
   - "npm run build"
-  - "git status"
+  - "git add public/bundle.js"
 
 deploy:
   provider: elasticbeanstalk
