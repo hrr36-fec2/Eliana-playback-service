@@ -4,7 +4,6 @@ node_js:
 
 install: 
   - npm install
-  - npm run db-create
   - npm run db-seed
   - npm run server-dev &
 
@@ -13,3 +12,14 @@ before_script:
 
 services:
   - mysql
+
+deploy:
+  provider: elasticbeanstalk
+  access_key_id: 
+    secure: "FYCyUoGtgT3tgp8COkm35je4kdWW6KRldCCjsSlO+TbEPHB0HhlATqrvJdzqIC/xhyC4lplVXKJwZ2FbW4odWmIAjrEgXTpN043EEEVhu6NpzeVSCQn+yfcXrsE5O3GFMT8LibmUZrcuKXEvmDnzaLq0hK7JBq1ohBSiz/k2yp4BPShvPBH3w/wRayVM83rSxBnloKxGpingxQeJ+Q/RGdKVh1XCGhOYuhn/aqWdT2yFuHMOXL+DSz1QxtZ0Jm7kc65KxDYT3YNzWiOLwrs+O1mspv1bSNM+ZFELvGn4kISB0y5/t9c+uAIpQuFat70Kn3flvkDSnlpSuF9fqSAJwFgmAMzkDObVql+eVZz3Bcr7NrzOEj1O/OIlHtPmo21qfYH8LCI69DMFcou1RB4+qCc6gmxj5YqDKeuxH2aEtalCB6O6ZM1iFG1/k6oWOYTPhf7CBoHzlkxx0WKRRivtEOU7poH8AQcyHRTnvRYXjTSPrso7AmR2u5u4KCOFpkA0h2fRJIqUqziYJSZk4y/4/GK5rLTVDh3VI6xfTJECUum6YFqrD+kmWbyp88TA7L08URvxQu+vP3UdOtXVUjzTilIFwPJ8LmfCsGGKdz48ptdGxvmbWGcM5xUEBP7lD8IZX2DXAYUtcsjFAPLB071O1+b5d1j+gOVUGw6J6rWbvK4="
+  secret_access_key:
+    secure: "HUZxIRhPdKK8uM81CIx0pvKbft+JSeqATFGRA436IbfmZHOoEJZZ2gqY431mhKa6PzHvla9FcmEloHH5rr8+imQujyanFMKz5MkNcHyaPjBVi9uvd77MhP3AoMA2bbOU7MiGaBHVtZrHEQiFMn16ze5j3enNdDFeBA4TDGPN5AhovHcQQ0jjtHBDJlA7CwM92QnXpwfSniKEbyWy2pVPvxT5VmLM+XmtQP0wxr2RYsKfrjQZVQPZu2VJnRle7pLpgc7pPG3pcTLcEh1y4xFP0CNPvmFgNUGJEZ5hJrMPu3kvVJtJpieRpuRhPuxVOTMp/cdBzgIxfeu7Z9sDAnZwUF8qzv+eW4HhJtr7j11l/03y6PUaQTHkkr0oETgsPdFXy+2DN/M0I0GL9vJTumMOOwWomw2fgRD0az/byc4a522Zuh0xltJdrW9mYmIm8Tn9DUFMpUtwNwAvpTQR+O4717Xn46BK4FGaFAUhIBNpkXVzKhCFmtWXvYz/W4cUnW53HluGQ3PBUrbvT7GElzqwsJlTb+4PQU6yMXcOh4D8sUVH8iPcJ2S6uBXZPhOoH1vS3vmcMrJmVUYZFl6uIrjtbdRNHSlGj9gNmPPHRi4RzmaIb2Lh1JkkohOmEe3TIF7MOX1AycafPvcE5vln6aqBrN7WlnSb8c70XO1fAi2FeYE="
+  region: "us-east-2"  
+  app: "Scootify"
+  env: "Scootify-env"
+  bucket_name: "elasticbeanstalk-us-east-2-048892182554"
