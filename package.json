@@ -19,7 +19,7 @@
   "scripts": {
     "postinstall": "curl -s https://raw.githubusercontent.com/reactorcore/pomander/master/bin/install | bash",
     "build": "webpack --mode production",
-    "db-seed": "mysql -uroot playlist < ./server/scripts/seed_db.sql",
+    "db-seed": "mysql -uroot < ./server/scripts/seed_db.sql",
     "db-create-only": "mysql -uroot playlist < ./server/scripts/schema.sql",
     "db-seed-online": "node ./server/scripts/seed_db.js",
     "start-dev": "webpack-dev-server --config ./webpack.config.js --mode development --watch",
