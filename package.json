@@ -23,7 +23,7 @@
     "db-create-only": "mysql -uroot playlist < ./server/scripts/schema.sql",
     "db-seed-online": "node ./server/scripts/seed_db.js",
     "start-dev": "webpack-dev-server --config ./webpack.config.js --mode development --watch",
-    "start": "nodemon server/app.js",
+    "start": "forever -c 'nodemon --exitcrash' server/app.js",
     "test": "mocha server/spec/server-spec.js",
     "test-react": "jest --verbose",
     "lint": "eslint ./"
@@ -33,6 +33,7 @@
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "express": "^4.15.0",
+    "forever": "^0.15.3",
     "html-webpack-plugin": "^3.2.0",
     "mysql": "^2.16.0",
     "nodemon": "^1.18.9",
