@@ -15,12 +15,12 @@ Scootify is a music streaming app modeled after the popular service Spotify. Thi
 
 ## Usage
 
-> Ensure you have a `MySQL` server.
-> [Install the project's dependencies](#installing-dependencies).
-> Use `npm start` to start the express server.
-> Use `npm run start-dev` to start the webpack server in dev mode.
-> To create and seed the database, use `npm run db-seed`.
-> Use `http://localhost:3001` to view the service.
+1. Ensure you have a `MySQL` server.
+2. [Install the project's dependencies](#installing-dependencies).
+3. Use `npm start` to start the express server.
+4. Use `npm run start-dev` to start the webpack server in dev mode.
+5. To create and seed the database, use `npm run db-seed`.
+6. Use `http://localhost:3001` to view the service.
 
 ## Requirements
 
