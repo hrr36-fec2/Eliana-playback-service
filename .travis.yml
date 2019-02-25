@@ -13,7 +13,9 @@ before_script:
 services:
   - mysql
 
-before_deploy: "npm run build"
+before_deploy: 
+  - "npm run build"
+  - "git status"
 
 deploy:
   provider: elasticbeanstalk
