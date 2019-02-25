@@ -33,6 +33,7 @@
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "express": "^4.15.0",
+    "html-webpack-plugin": "^3.2.0",
     "mysql": "^2.16.0",
     "nodemon": "^1.18.9",
     "sequelize": "^3.21.0",

@@ -1,3 +1,10 @@
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
+  template: './client/src/index.html',
+  filename: 'index.html',
+  inject: 'body'
+});
+
 module.exports = {
   entry: './client/src/index.jsx',
   module: {
@@ -19,5 +26,8 @@ module.exports = {
   },
   devServer: {
     contentBase: './public'
-  }
+  },
+  plugins: [
+    HtmlWebpackPluginConfig
+  ]
 };
