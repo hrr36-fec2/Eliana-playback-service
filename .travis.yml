@@ -25,5 +25,3 @@ deploy:
   app: "Scootify"
   env: "Scootify-env"
   bucket_name: "elasticbeanstalk-us-east-2-048892182554"
-
-after_deploy: "npm run db-seed"

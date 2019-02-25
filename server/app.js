@@ -9,7 +9,7 @@ var app = express();
 module.exports.app = app;
 
 
-app.set('port', process.env.PORT || 3001);
+app.set('port', 3001);
 
 app.use(parser.json());
 app.use(cors());

@@ -1,9 +1,3 @@
-DROP DATABASE IF EXISTS `playlist`;
-
-CREATE DATABASE playlist;
-
-USE playlist;
-
 DROP TABLE IF EXISTS `playlist`;
 		
 CREATE TABLE `playlist` (
